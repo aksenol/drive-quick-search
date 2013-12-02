@@ -2,22 +2,25 @@
   "manifest_version": 2,
   "name": "Google Drive Quick Search",
   "description" : "Lets you quickly search and get results using the address bar",
-  "icons": {	
-				"128": "icon128.png",
-				"16": "icon16.png",
-				"48": "icon48.png"
-				},
+  "icons": {
+    "128": "icon128.png",
+    "16": "icon16.png",
+    "48": "icon48.png"
+  },
   "version": "0.1",
   "background": {
-	"page": "background.html"
+  "page": "background.html"
   },
   "omnibox": { "keyword" : "drive" },
-  "permissions": [ "tabs", 
-  "https://www.googleapis.com/drive/v2/files",
-  "https://docs.google.com/feeds/*",
-  "https://www.google.com/accounts/OAuthGetRequestToken",
-  "https://www.google.com/accounts/OAuthAuthorizeToken",
-  "https://www.google.com/accounts/OAuthGetAccessToken"
+  "permissions": [
+    "alarms",
+    "storage",
+    "tabs",
+    "https://www.googleapis.com/drive/v2/files",
+    "https://docs.google.com/feeds/*",
+    "https://www.google.com/accounts/OAuthGetRequestToken",
+    "https://www.google.com/accounts/OAuthAuthorizeToken",
+    "https://www.google.com/accounts/OAuthGetAccessToken"
   ],
   "web_accessible_resources": [
     "chrome_ex_oauth.html"
