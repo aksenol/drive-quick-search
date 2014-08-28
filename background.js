@@ -77,11 +77,27 @@ function retrieveItemsFromStorage() {
   });
 }
 
+// escape entities to avoid XML parsing issues with arbitrary document titles
+//   github.com/kurrik/chrome-extensions/tree/master/omnibox-escaping
+//   stackoverflow.com/questions/1091945/where-can-i-get-a-list-of-the-xml-document-escape-characters
+function sanitizeItemTitle(title) {
+
+  return title.replace(/"/g,"&quot;")
+              .replace(/'/g,"&apos")
+              .replace(/</g,"&lt;")
+              .replace(/>/g,"&gt;")
+              .replace(/&/g,"&amp;");
+}
+
+
 function retrieveItemsFromApi() {
   retrieveDriveItems([], undefined, function (result) {
     var newItems = [];
     result.forEach(function (item) {
-      newItems.push({content: item.alternateLink, description: item.title });
+      newItems.push({
+          content:      item.alternateLink,
+          description:  sanitizeItemTitle(item.title)
+      });
     });
     items = newItems;
     var driveItems = items.map(function (item) { return JSON.stringify(item); });
