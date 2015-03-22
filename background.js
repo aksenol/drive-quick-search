@@ -113,6 +113,12 @@ function retrieveDriveItems(items, nextPageToken, callback) {
     parameters: {
       fields: 'items(alternateLink,title),nextPageToken',
       maxResults: MAX_RESULTS,
+
+      // only docs. things i've opened
+      q: 'mimeType contains "google-apps" and lastViewedByMeDate > "2010-06-04T12:00:00"',
+      
+      // only files I have accessed.
+      corpus: "DEFAULT", 
       key: API_KEY
     }
   };
