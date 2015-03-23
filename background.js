@@ -9,7 +9,7 @@ var oauth = ChromeExOAuth.initBackgroundPage({
 });
 
 var API_KEY = 'AIzaSyBk1BMpp_cQ-AUkHDKkQu-oyk9KX0IpRFs';
-var MAX_RESULTS = 250;
+var MAX_RESULTS = 1000;
 var REFRESH_INTERVAL = 10; // minutes
 
 var items = [];
