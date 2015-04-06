@@ -15,32 +15,37 @@ var REFRESH_INTERVAL = 10; // minutes
 var items = [];
 var changeId = undefined;
 
-oauth.authorize(function (token, secret) {
-  chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
-    chrome.omnibox.setDefaultSuggestion({description:"Search "+text+" in Google Drive"});
-    suggest(filterItems(text));
-  });
+function authorize(){
+  oauth.authorize(function (token, secret) {
+    chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
+      chrome.omnibox.setDefaultSuggestion({description:"Search "+text+" in Google Drive"});
+      suggest(filterItems(text));
+    });
 
-  chrome.omnibox.onInputEntered.addListener(function (text) {
-    var regexp = /https:\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/;
-    if (!regexp.test(text))
-      chrome.tabs.update({url: "https://drive.google.com/#search/"+text});
-    else
-      chrome.tabs.update({url: text});
-  });
+    chrome.omnibox.onInputEntered.addListener(function (text) {
+      var regexp = /https:\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/;
+      if (!regexp.test(text))
+        chrome.tabs.update({url: "https://drive.google.com/#search/"+text});
+      else
+        chrome.tabs.update({url: text});
+    });
 
-  chrome.alarms.create({periodInMinutes: REFRESH_INTERVAL});
-  chrome.alarms.onAlarm.addListener(function () {
-    isDriveListChanged(retrieveItemsFromApi, function () { });
-  });
+    chrome.alarms.create({periodInMinutes: REFRESH_INTERVAL});
+    chrome.alarms.onAlarm.addListener(function () {
+      isDriveListChanged(retrieveItemsFromApi, function () { });
+    });
 
-  chrome.storage.local.get('driveChangeId', function (storage) {
-    if (storage.driveChangeId) {
-      changeId = storage.driveChangeId;
-    }
-    isDriveListChanged(retrieveItemsFromApi, retrieveItemsFromStorage);
+    chrome.storage.local.get('driveChangeId', function (storage) {
+      if (storage.driveChangeId) {
+        changeId = storage.driveChangeId;
+      }
+      isDriveListChanged(retrieveItemsFromApi, retrieveItemsFromStorage);
+    });
   });
-});
+}
+
+authorize();
+
 
 function filterItems (query) {
   var lowerCaseQuery = query.toLowerCase();
