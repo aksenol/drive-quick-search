@@ -88,10 +88,10 @@ function retrieveItemsFromStorage() {
 function sanitizeItemTitle(title) {
 
   return title.replace(/"/g,"&quot;")
-              .replace(/'/g,"&apos")
-              .replace(/</g,"&lt;")
-              .replace(/>/g,"&gt;")
-              .replace(/&/g,"&amp;");
+  .replace(/'/g,"&apos")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/&/g,"&amp;");
 }
 
 
@@ -100,8 +100,8 @@ function retrieveItemsFromApi() {
     var newItems = [];
     result.forEach(function (item) {
       newItems.push({
-          content:      item.alternateLink,
-          description:  sanitizeItemTitle(item.title)
+        content:      item.alternateLink,
+        description:  sanitizeItemTitle(item.title)
       });
     });
     items = newItems;
