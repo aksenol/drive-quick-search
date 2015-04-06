@@ -71,6 +71,12 @@ function retrieveDriveChangeId(callback) {
     }
   };
   executeApiRequest(url, function (result) {
+    // fail with bad credentials?
+    if (result.error && result.error.code == 401){
+      // clear tokens and try again
+      oauth.clearTokens();
+      return authorize();
+    }
     changeId = result.largestChangeId;
     callback();
   }, request);
