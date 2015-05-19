@@ -15,32 +15,36 @@ var REFRESH_INTERVAL = 10; // minutes
 var items = [];
 var changeId = undefined;
 
-oauth.authorize(function (token, secret) {
-  chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
-    chrome.omnibox.setDefaultSuggestion({description:"Search "+text+" in Google Drive"});
-    suggest(filterItems(text));
-  });
+function init(){
+  oauth.authorize(function (token, secret) {
+    chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
+      chrome.omnibox.setDefaultSuggestion({description:"Search "+text+" in Google Drive"});
+      suggest(filterItems(text));
+    });
 
-  chrome.omnibox.onInputEntered.addListener(function (text) {
-    var regexp = /https:\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/;
-    if (!regexp.test(text))
-      chrome.tabs.update({url: "https://drive.google.com/#search/"+text});
-    else
-      chrome.tabs.update({url: text});
-  });
+    chrome.omnibox.onInputEntered.addListener(function (text) {
+      var regexp = /https:\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/;
+      if (!regexp.test(text))
+        chrome.tabs.update({url: "https://drive.google.com/#search/"+text});
+      else
+        chrome.tabs.update({url: text});
+    });
 
-  chrome.alarms.create({periodInMinutes: REFRESH_INTERVAL});
-  chrome.alarms.onAlarm.addListener(function () {
-    isDriveListChanged(retrieveItemsFromApi, function () { });
-  });
+    chrome.alarms.create({periodInMinutes: REFRESH_INTERVAL});
+    chrome.alarms.onAlarm.addListener(function () {
+      isDriveListChanged(retrieveItemsFromApi, function () { });
+    });
 
-  chrome.storage.local.get('driveChangeId', function (storage) {
-    if (storage.driveChangeId) {
-      changeId = storage.driveChangeId;
-    }
-    isDriveListChanged(retrieveItemsFromApi, retrieveItemsFromStorage);
+    chrome.storage.local.get('driveChangeId', function (storage) {
+      if (storage.driveChangeId) {
+        changeId = storage.driveChangeId;
+      }
+      isDriveListChanged(retrieveItemsFromApi, retrieveItemsFromStorage);
+    });
   });
-});
+}
+
+
 
 function filterItems (query) {
   var lowerCaseQuery = query.toLowerCase();
@@ -66,6 +70,12 @@ function retrieveDriveChangeId(callback) {
     }
   };
   executeApiRequest(url, function (result) {
+    // fail with bad credentials?
+    if (result.error && result.error.code == 401){
+      // clear tokens and try again
+      oauth.clearTokens();
+      return init();
+    }
     changeId = result.largestChangeId;
     callback();
   }, request);
@@ -83,10 +93,10 @@ function retrieveItemsFromStorage() {
 function sanitizeItemTitle(title) {
 
   return title.replace(/"/g,"&quot;")
-              .replace(/'/g,"&apos")
-              .replace(/</g,"&lt;")
-              .replace(/>/g,"&gt;")
-              .replace(/&/g,"&amp;");
+  .replace(/'/g,"&apos")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/&/g,"&amp;");
 }
 
 
@@ -95,8 +105,8 @@ function retrieveItemsFromApi() {
     var newItems = [];
     result.forEach(function (item) {
       newItems.push({
-          content:      item.alternateLink,
-          description:  sanitizeItemTitle(item.title)
+        content:      item.alternateLink,
+        description:  sanitizeItemTitle(item.title)
       });
     });
     items = newItems;
@@ -141,3 +151,8 @@ function executeApiRequest(url, responseCallback, request) {
     responseCallback(object);
   }, request);
 }
+
+
+
+// kick it off.
+init();
