@@ -15,7 +15,7 @@ var REFRESH_INTERVAL = 10; // minutes
 var items = [];
 var changeId = undefined;
 
-function authorize(){
+function init(){
   oauth.authorize(function (token, secret) {
     chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
       chrome.omnibox.setDefaultSuggestion({description:"Search "+text+" in Google Drive"});
@@ -44,7 +44,6 @@ function authorize(){
   });
 }
 
-authorize();
 
 
 function filterItems (query) {
@@ -75,7 +74,7 @@ function retrieveDriveChangeId(callback) {
     if (result.error && result.error.code == 401){
       // clear tokens and try again
       oauth.clearTokens();
-      return authorize();
+      return init();
     }
     changeId = result.largestChangeId;
     callback();
@@ -152,3 +151,8 @@ function executeApiRequest(url, responseCallback, request) {
     responseCallback(object);
   }, request);
 }
+
+
+
+// kick it off.
+init();
