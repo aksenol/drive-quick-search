@@ -19,8 +19,10 @@
     "identity",
     "storage"
   ],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt96dAMW5YLRb5aMLVnkdG0u2Pf/GV75YCWCmE2F4zGxKs/aafQxteqvLnbxujY/AQVrhFgOdZ7JKrqr+WKSvCLXVwN3geD8gOITDMST2CeDK9DGNxlQqB+eDAhuMHO2wqM12AwkfC9NxBy0Bb0HTECTTd9nGiCVhzUCXijCj6XnqCWEtvWSmxB75Nvdr6dMQCj51wX6yUi3cOkPvOJMuSQ1q6cwDJlfNahqeIT7jymwuGyPKaQSyktphHL11/xczxdIUTaIT0WSbdvfyKDYJiisuCrA0zqihSUXwE7ia5/uE5griTK08jlEyUqhzcMHVMuN0SVsNqyqHLuXptobxrwIDAQAB",
   "oauth2": {
-    "client_id": "TODO.apps.googleusercontent.com",
+    "client_id": "608686014163.apps.googleusercontent.com",
     "scopes": [ "https://www.googleapis.com/auth/drive.readonly" ]
   }
+
 }
