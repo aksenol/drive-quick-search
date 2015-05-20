@@ -1,22 +1,14 @@
-var oauth = ChromeExOAuth.initBackgroundPage({
-  'request_url': 'https://www.google.com/accounts/OAuthGetRequestToken',
-  'authorize_url': 'https://www.google.com/accounts/OAuthAuthorizeToken',
-  'access_url': 'https://www.google.com/accounts/OAuthGetAccessToken',
-  'consumer_key': 'anonymous',
-  'consumer_secret': 'anonymous',
-  'scope': 'https://www.googleapis.com/auth/drive',
-  'app_name':'GoogleDriveQuickSearch'
-});
-
-var API_KEY = 'AIzaSyBk1BMpp_cQ-AUkHDKkQu-oyk9KX0IpRFs';
 var MAX_RESULTS = 1000;
 var REFRESH_INTERVAL = 10; // minutes
 
 var items = [];
 var changeId = undefined;
+var token;
 
 function init(){
-  oauth.authorize(function (token, secret) {
+  chrome.identity.getAuthToken({ 'interactive': true }, function(authToken) {
+    token = authToken;
+
     chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
       chrome.omnibox.setDefaultSuggestion({description:"Search "+text+" in Google Drive"});
       suggest(filterItems(text));
@@ -65,16 +57,16 @@ function retrieveDriveChangeId(callback) {
   var request = {
     method: 'GET',
     parameters: {
-      fields: 'largestChangeId',
-      key: API_KEY
+      fields: 'largestChangeId'
     }
   };
   executeApiRequest(url, function (result) {
     // fail with bad credentials?
-    if (result.error && result.error.code == 401){
+    if (result.error && result.error.code == 401) {
       // clear tokens and try again
-      oauth.clearTokens();
-      return init();
+      chrome.identity.removeCachedAuthToken({token: token}, function() {
+        return init();
+      });
     }
     changeId = result.largestChangeId;
     callback();
@@ -126,10 +118,9 @@ function retrieveDriveItems(items, nextPageToken, callback) {
 
       // only docs. things i've opened
       q: 'mimeType contains "google-apps" and lastViewedByMeDate > "2010-06-04T12:00:00"',
-      
+
       // only files I have accessed.
-      corpus: "DEFAULT", 
-      key: API_KEY
+      corpus: "DEFAULT",
     }
   };
   if (nextPageToken) {
@@ -145,11 +136,20 @@ function retrieveDriveItems(items, nextPageToken, callback) {
   }, request);
 }
 
+function serialize(obj) {
+  var str = [];
+  for(var p in obj)
+     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+  return str.join("&");
+}
+
 function executeApiRequest(url, responseCallback, request) {
-  oauth.sendSignedRequest(url, function (response) {
-    var object = JSON.parse(response);
-    responseCallback(object);
-  }, request);
+  xhr = new XMLHttpRequest();
+  xhr.open(request.method, url + '?' + serialize(request.parameters), true);
+  xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+  xhr.responseType = 'json';
+  xhr.onload = function () { responseCallback(xhr.response); }
+  xhr.send();
 }
 
 

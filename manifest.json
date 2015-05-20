@@ -7,22 +7,20 @@
     "16": "icon16.png",
     "48": "icon48.png"
   },
+  "minimum_chrome_version": "29",
   "version": "0.1",
   "background": {
-  "page": "background.html"
+    "persistent": false,
+    "scripts": [ "background.js" ]
   },
   "omnibox": { "keyword" : "drive" },
   "permissions": [
     "alarms",
-    "storage",
-    "tabs",
-    "https://www.googleapis.com/drive/v2/files",
-    "https://docs.google.com/feeds/*",
-    "https://www.google.com/accounts/OAuthGetRequestToken",
-    "https://www.google.com/accounts/OAuthAuthorizeToken",
-    "https://www.google.com/accounts/OAuthGetAccessToken"
+    "identity",
+    "storage"
   ],
-  "web_accessible_resources": [
-    "chrome_ex_oauth.html"
-  ]
+  "oauth2": {
+    "client_id": "TODO.apps.googleusercontent.com",
+    "scopes": [ "https://www.googleapis.com/auth/drive.readonly" ]
+  }
 }
