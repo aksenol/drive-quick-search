@@ -1,20 +1,25 @@
 {
-   "background": {
-      "page": "background.html"
-   },
-   "description": "Lets you quickly search files in Google Drive™ and get results using the address bar",
-   "icons": {
-      "128": "icon128.png",
-      "16": "icon16.png",
-      "48": "icon48.png"
-   },
-   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDtu5VeoVUZ2ae9nXFfQYNvtDVeN4eb0MV/f4NQ1Z5DUcBjKY4E67lze14dH6/rnsok6Z5UZIww5liVyQROCERhl6r0pZaMUATvSmK9V9/vHfn13YMW6tFtdTA5WgnIGL2b3MY7q12iAY9Q/YEfT+ON4BPvV6WaGrBSku9oaDQtywIDAQAB",
    "manifest_version": 2,
+   "version": "0.3",
+   "minimum_chrome_version": "29",
    "name": "Quick Search for Google Drive™",
-   "omnibox": {
-      "keyword": "drive"
+   "description": "Lets you quickly search files in Google Drive™ and get results using the address bar",
+   "omnibox": { "keyword": "drive" },
+   "icons": {
+      "128": "res/icon.png",
+      "16": "res/icon.png",
+      "48": "res/icon.png"
    },
-   "permissions": [ "tabs", "https://www.googleapis.com/drive/v2/files", "https://docs.google.com/feeds/*", "https://www.google.com/accounts/OAuthGetRequestToken", "https://www.google.com/accounts/OAuthAuthorizeToken", "https://www.google.com/accounts/OAuthGetAccessToken" ],
-   "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "0.2.1"
+   "background": {
+     "persistent": false,
+     "scripts": [ "background.js" ]
+   },
+   "permissions": [
+      "identity"
+   ],
+   "oauth2": {
+    "client_id": "608686014163-6o9nqk0bs8oaaf7qo52ng36aioggb3q4.apps.googleusercontent.com",
+    "scopes": [ "https://www.googleapis.com/auth/drive.readonly" ]
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDtu5VeoVUZ2ae9nXFfQYNvtDVeN4eb0MV/f4NQ1Z5DUcBjKY4E67lze14dH6/rnsok6Z5UZIww5liVyQROCERhl6r0pZaMUATvSmK9V9/vHfn13YMW6tFtdTA5WgnIGL2b3MY7q12iAY9Q/YEfT+ON4BPvV6WaGrBSku9oaDQtywIDAQAB"
 }
