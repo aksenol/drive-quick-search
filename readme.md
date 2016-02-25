@@ -1,6 +1,7 @@
 # drive-quick-search
 Google Drive Quick Search
 
+https://chrome.google.com/webstore/detail/quick-search-for-google-d/ddebdlfmldojeofgkeocjdkloocegmae?hl=en
 
 
 
